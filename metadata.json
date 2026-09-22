@@ -1,0 +1,7 @@
+{
+  "name": "UPTD Laboratorium Lingkungan DLH Kabupaten Bulungan",
+  "description": "Sistem Informasi dan Layanan Pengujian Sampel Lingkungan Resmi UPTD Laboratorium Lingkungan Dinas Lingkungan Hidup Kabupaten Bulungan, Kalimantan Utara.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
