@@ -12,7 +12,8 @@ import {
   Server,
   FileCode,
   Sparkles,
-  Info
+  Info,
+  Database
 } from 'lucide-react';
 
 interface LocalhostGuideModalProps {
@@ -23,7 +24,7 @@ interface LocalhostGuideModalProps {
 export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen, onClose }) => {
   const [copiedCmd, setCopiedCmd] = useState(false);
   const [copiedPath, setCopiedPath] = useState(false);
-  const [activeOption, setActiveOption] = useState<'xampp' | 'node'>('xampp');
+  const [activeOption, setActiveOption] = useState<'xampp' | 'mysql' | 'node'>('xampp');
 
   if (!isOpen) return null;
 
@@ -77,24 +78,36 @@ export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen
             <div className="space-y-1 text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-1.5 text-amber-300 text-xs font-bold">
                 <Sparkles className="w-4 h-4" />
-                <span>Paket Lengkap Siap Ekstrak (131 KB)</span>
+                <span>Paket Lengkap Website + Database MySQL</span>
               </div>
               <h4 className="text-base font-bold text-white">
-                Download ZIP Siap Pakai untuk XAMPP
+                Download ZIP XAMPP & Script database.sql
               </h4>
               <p className="text-xs text-teal-200 leading-relaxed max-w-md">
-                Sudah berisi compiled HTML, CSS, JS, <code className="bg-teal-950 px-1 rounded text-amber-200">index.php</code>, dan <code className="bg-teal-950 px-1 rounded text-amber-200">.htaccess</code> siap letak di folder <code className="text-white">htdocs</code>.
+                Sudah berisi compiled HTML, CSS, JS, <code className="bg-teal-950 px-1 rounded text-amber-200">database.sql</code>, <code className="bg-teal-950 px-1 rounded text-amber-200">index.php</code>, dan API PHP siap letak di folder <code className="text-white">htdocs</code>.
               </p>
             </div>
 
-            <a
-              href="./lab-dlh-bulungan-xampp-siap-pakai.zip"
-              download="lab-dlh-bulungan-xampp-siap-pakai.zip"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 cursor-pointer shrink-0"
-            >
-              <DownloadCloud className="w-4 h-4 text-slate-950" />
-              <span>UNDUH ZIP XAMPP</span>
-            </a>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
+              <a
+                href="./lab-dlh-bulungan-xampp-siap-pakai.zip"
+                download="lab-dlh-bulungan-xampp-siap-pakai.zip"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 cursor-pointer shrink-0"
+              >
+                <DownloadCloud className="w-4 h-4 text-slate-950" />
+                <span>UNDUH ZIP XAMPP</span>
+              </a>
+
+              <a
+                href="./database.sql"
+                download="database.sql"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl border border-slate-700 transition-all active:scale-95 cursor-pointer shrink-0"
+                title="Unduh file SQL untuk phpMyAdmin"
+              >
+                <Database className="w-4 h-4 text-amber-400" />
+                <span>database.sql</span>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -109,7 +122,18 @@ export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen
             }`}
           >
             <Server className="w-4 h-4" />
-            <span>Cara 1: Menggunakan XAMPP (Apache)</span>
+            <span>1. Pasang di XAMPP</span>
+          </button>
+          <button
+            onClick={() => setActiveOption('mysql')}
+            className={`flex-1 py-2.5 font-bold border-b-2 transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+              activeOption === 'mysql'
+                ? 'border-teal-700 text-teal-800 bg-teal-50/50'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Database className="w-4 h-4" />
+            <span>2. Setup Database MySQL</span>
           </button>
           <button
             onClick={() => setActiveOption('node')}
@@ -120,7 +144,7 @@ export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen
             }`}
           >
             <Terminal className="w-4 h-4" />
-            <span>Cara 2: Menggunakan Node.js / Vite</span>
+            <span>3. Opsi Node.js</span>
           </button>
         </div>
 
@@ -211,7 +235,58 @@ export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen
           </div>
         )}
 
-        {/* Content Tab 2: Node.js */}
+        {/* Content Tab 2: MySQL Setup */}
+        {activeOption === 'mysql' && (
+          <div className="space-y-4">
+            <h4 className="text-xs font-bold text-teal-900 uppercase tracking-wider flex items-center gap-1.5">
+              <Database className="w-4 h-4 text-amber-600" />
+              <span>Cara Menghubungkan & Mengedit Database MySQL di phpMyAdmin:</span>
+            </h4>
+
+            <div className="space-y-3 text-xs">
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-slate-900">
+                  <span className="w-5 h-5 rounded-full bg-teal-800 text-white text-[11px] flex items-center justify-center font-mono">1</span>
+                  <span>Buka phpMyAdmin</span>
+                </div>
+                <p className="text-slate-600 pl-7">
+                  Akses <code className="bg-teal-100 text-teal-900 px-1 rounded font-bold font-mono">http://localhost/phpmyadmin/</code> di browser Anda (pastikan Apache & MySQL aktif di XAMPP).
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-slate-900">
+                  <span className="w-5 h-5 rounded-full bg-teal-800 text-white text-[11px] flex items-center justify-center font-mono">2</span>
+                  <span>Buat Database Bernama <code className="font-mono text-teal-800">db_lab_bulungan</code></span>
+                </div>
+                <p className="text-slate-600 pl-7">
+                  Klik menu <strong>New / Baru</strong> pada panel kiri, masukkan nama database <code className="font-bold text-teal-900">db_lab_bulungan</code>, dan klik <strong>Create / Buat</strong>.
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                <div className="flex items-center gap-2 font-bold text-slate-900">
+                  <span className="w-5 h-5 rounded-full bg-teal-800 text-white text-[11px] flex items-center justify-center font-mono">3</span>
+                  <span>Import File <code className="font-mono text-teal-800">database.sql</code></span>
+                </div>
+                <p className="text-slate-600 pl-7">
+                  Pilih database <code className="font-mono font-bold">db_lab_bulungan</code>, klik tab <strong>Import</strong> di bagian atas, pilih file <code className="font-bold text-slate-900">database.sql</code> yang Anda unduh, lalu klik <strong>Import / Kirim</strong> di bagian bawah.
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-1 text-emerald-950">
+                <strong className="block font-bold text-emerald-900">
+                  Cara Mengedit Data:
+                </strong>
+                <p className="text-[11px] text-emerald-900 leading-relaxed">
+                  Semua data kini dapat diedit langsung: baik lewat antarmuka phpMyAdmin (tabel <code className="font-bold">parameters</code>, <code className="font-bold">samples</code>, <code className="font-bold">site_settings</code>), maupun melalui tab <strong>Database MySQL</strong> di Dashboard Admin website.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Content Tab 3: Node.js */}
         {activeOption === 'node' && (
           <div className="space-y-4">
             <h4 className="text-xs font-bold text-teal-900 uppercase tracking-wider">
@@ -261,15 +336,26 @@ export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen
 
         {/* Action Button */}
         <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-          <a
-            href="./PANDUAN_XAMPP.txt"
-            target="_blank"
-            download="PANDUAN_XAMPP.txt"
-            className="text-xs text-teal-700 hover:text-teal-900 font-semibold underline flex items-center gap-1"
-          >
-            <FileCode className="w-3.5 h-3.5" />
-            <span>Unduh Catatan Teks PANDUAN_XAMPP.txt</span>
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="./PANDUAN_XAMPP.txt"
+              target="_blank"
+              download="PANDUAN_XAMPP.txt"
+              className="text-xs text-teal-700 hover:text-teal-900 font-semibold underline flex items-center gap-1"
+            >
+              <FileCode className="w-3.5 h-3.5" />
+              <span>PANDUAN_XAMPP.txt</span>
+            </a>
+            <span className="text-slate-300">•</span>
+            <a
+              href="./database.sql"
+              download="database.sql"
+              className="text-xs text-amber-700 hover:text-amber-900 font-semibold underline flex items-center gap-1"
+            >
+              <Database className="w-3.5 h-3.5" />
+              <span>database.sql</span>
+            </a>
+          </div>
 
           <button
             onClick={onClose}

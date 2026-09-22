@@ -25,7 +25,8 @@ import {
   MessageSquareWarning,
   LogOut,
   Globe,
-  Sliders
+  Sliders,
+  Database
 } from 'lucide-react';
 import { 
   SampleRequest, 
@@ -46,6 +47,7 @@ import { AdminSiteSettingsTab } from './admin/AdminSiteSettingsTab';
 import { AdminProfileTab } from './admin/AdminProfileTab';
 import { AdminSOPTab } from './admin/AdminSOPTab';
 import { AdminComplaintsTab } from './admin/AdminComplaintsTab';
+import { AdminDatabaseTab } from './admin/AdminDatabaseTab';
 
 interface AdminDashboardProps {
   currentUser?: AdminUser | null;
@@ -99,7 +101,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onUpdateComplaints,
   feedbacks,
 }) => {
-  const [activeTab, setActiveTab] = useState<'samples' | 'parameters' | 'profile' | 'sop' | 'news' | 'skm_complaints' | 'site_settings' | 'stats'>('samples');
+  const [activeTab, setActiveTab] = useState<'samples' | 'parameters' | 'profile' | 'sop' | 'news' | 'skm_complaints' | 'site_settings' | 'stats' | 'database'>('samples');
   const [searchFilter, setSearchFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [matrixFilter, setMatrixFilter] = useState<string>('all');
@@ -381,6 +383,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           >
             <BarChart3 className="w-4 h-4 text-teal-600" />
             <span>Laporan Retribusi</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('database')}
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              activeTab === 'database'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs font-bold'
+                : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
+            }`}
+          >
+            <Database className="w-4 h-4 text-amber-500" />
+            <span className="flex items-center gap-1.5">
+              <span>Database MySQL</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            </span>
           </button>
         </div>
 
@@ -777,6 +794,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <AdminSiteSettingsTab
             settings={siteSettings}
             onSaveSettings={onUpdateSiteSettings}
+          />
+        )}
+
+        {/* TAB 9: DATABASE MYSQL MANAGEMENT */}
+        {activeTab === 'database' && (
+          <AdminDatabaseTab
+            siteSettings={siteSettings}
+            samples={samples}
+            parameters={parameters}
+            staffMembers={staffMembers}
+            labFacilities={labFacilities}
+            sopDocuments={sopDocuments}
+            news={news}
+            complaints={complaints}
+            feedbacks={feedbacks}
           />
         )}
 

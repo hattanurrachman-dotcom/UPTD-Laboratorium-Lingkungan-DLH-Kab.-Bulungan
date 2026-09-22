@@ -14,6 +14,7 @@ async function createXamppZip() {
   function addDirToZip(currentDir, zipFolder) {
     const items = fs.readdirSync(currentDir);
     for (const item of items) {
+      if (item.endsWith('.zip')) continue;
       const fullPath = path.join(currentDir, item);
       const stat = fs.statSync(fullPath);
       if (stat.isDirectory()) {
