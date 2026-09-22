@@ -12,7 +12,16 @@ import {
   Navigation
 } from 'lucide-react';
 
-export const ContactSection: React.FC = () => {
+import { SiteSettings } from '../types';
+import { DEFAULT_SITE_SETTINGS } from '../data/labData';
+
+interface ContactSectionProps {
+  settings?: SiteSettings;
+}
+
+export const ContactSection: React.FC<ContactSectionProps> = ({
+  settings = DEFAULT_SITE_SETTINGS,
+}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -56,10 +65,10 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900">
-                    UPTD Laboratorium Lingkungan Hidup
+                    {settings.agencyName || 'UPTD Laboratorium Lingkungan Hidup'}
                   </h3>
                   <p className="text-xs text-teal-800 font-semibold">
-                    Dinas Lingkungan Hidup Pemerintah Kabupaten Bulungan
+                    {settings.agencySub || 'Dinas Lingkungan Hidup Pemerintah Kabupaten Bulungan'}
                   </p>
                 </div>
               </div>
@@ -69,7 +78,7 @@ export const ContactSection: React.FC = () => {
                   <MapPin className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
                   <div>
                     <strong className="text-slate-800 block">Alamat Kantor & Laboratorium:</strong>
-                    <span>Jl. Kolonel Soetadji No. 1, Tanjung Selor Hilir, Kec. Tanjung Selor, Kabupaten Bulungan, Kalimantan Utara 77212 (Kompleks Perkantoran Pemkab Bulungan)</span>
+                    <span>{settings.address || 'Jl. Kolonel Soetadji No. 1, Tanjung Selor Hilir, Kec. Tanjung Selor, Kabupaten Bulungan, Kalimantan Utara 77212'}</span>
                   </div>
                 </div>
 
@@ -77,7 +86,7 @@ export const ContactSection: React.FC = () => {
                   <Phone className="w-4 h-4 text-teal-600 shrink-0" />
                   <div>
                     <strong className="text-slate-800 block">Telepon / Fax Kantor:</strong>
-                    <span className="font-mono">(0552) 21124 / 21890</span>
+                    <span className="font-mono">{settings.phone || '(0552) 21124 / 21890'}</span>
                   </div>
                 </div>
 
@@ -86,12 +95,12 @@ export const ContactSection: React.FC = () => {
                   <div>
                     <strong className="text-slate-800 block">WhatsApp Layanan & Konsultasi Teknis:</strong>
                     <a 
-                      href="https://wa.me/6281254332190" 
+                      href={`https://wa.me/${(settings.whatsapp || '6281254332190').replace(/[^0-9]/g, '')}`} 
                       target="_blank" 
                       rel="noreferrer"
                       className="font-mono text-emerald-700 font-bold hover:underline"
                     >
-                      +62 812-5433-2190 (Loket Lab DLH Bulungan)
+                      {settings.whatsapp || '+62 812-5433-2190'} (Loket Lab DLH Bulungan)
                     </a>
                   </div>
                 </div>
@@ -100,7 +109,7 @@ export const ContactSection: React.FC = () => {
                   <Mail className="w-4 h-4 text-teal-600 shrink-0" />
                   <div>
                     <strong className="text-slate-800 block">Surat Elektronik (Email Resmi):</strong>
-                    <span className="font-mono text-teal-800">lablingkungan@bulungan.go.id</span>
+                    <span className="font-mono text-teal-800">{settings.email || 'lablingkungan@bulungan.go.id'}</span>
                   </div>
                 </div>
               </div>

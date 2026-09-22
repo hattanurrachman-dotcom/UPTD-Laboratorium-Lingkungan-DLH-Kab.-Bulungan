@@ -11,12 +11,22 @@ import {
   ChevronRight
 } from 'lucide-react';
 
+import { SiteSettings } from '../types';
+import { DEFAULT_SITE_SETTINGS } from '../data/labData';
+
 interface FooterProps {
   onNavigate: (tab: string) => void;
   onOpenAdmin: () => void;
+  onOpenLocalhostGuide?: () => void;
+  settings?: SiteSettings;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdmin }) => {
+export const Footer: React.FC<FooterProps> = ({ 
+  onNavigate, 
+  onOpenAdmin, 
+  onOpenLocalhostGuide,
+  settings = DEFAULT_SITE_SETTINGS 
+}) => {
   return (
     <footer className="bg-slate-950 text-slate-300 border-t border-slate-800 no-print">
       
@@ -25,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdmin }) => {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
           <div className="flex items-center gap-2 text-teal-200">
             <ShieldCheck className="w-4 h-4 text-amber-400" />
-            <span>Terakreditasi Komite Akreditasi Nasional (KAN) <strong>SNI ISO/IEC 17025:2017 No. LP-1234-IDN</strong></span>
+            <span>Terakreditasi Komite Akreditasi Nasional (KAN) <strong>SNI ISO/IEC 17025:2017 {settings.kanAccreditationNumber ? `No. ${settings.kanAccreditationNumber}` : 'No. LP-1234-IDN'}</strong></span>
           </div>
           <div className="flex items-center gap-3 text-slate-300 text-[11px]">
             <span>Bumi Benuanta Bersih & Berkelanjutan</span>
@@ -46,11 +56,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdmin }) => {
                 <Building2 className="w-7 h-7" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white leading-tight">
-                  UPTD LABORATORIUM LINGKUNGAN HIDUP
+                <h3 className="text-sm font-bold text-white leading-tight uppercase">
+                  {settings.agencyName || 'UPTD LABORATORIUM LINGKUNGAN HIDUP'}
                 </h3>
-                <p className="text-xs text-teal-400 font-semibold mt-0.5">
-                  DINAS LINGKUNGAN HIDUP KAB. BULUNGAN
+                <p className="text-xs text-teal-400 font-semibold mt-0.5 uppercase">
+                  {settings.agencySub || 'DINAS LINGKUNGAN HIDUP KAB. BULUNGAN'}
                 </p>
               </div>
             </div>
@@ -65,7 +75,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdmin }) => {
               </div>
               <div className="text-[10px] text-slate-400">
                 <span className="text-white font-bold block">Laboratorium Penguji</span>
-                LP-1234-IDN • BSrE TTE
+                {settings.kanAccreditationNumber || 'LP-1234-IDN'} • BSrE TTE
               </div>
             </div>
           </div>
@@ -205,15 +215,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdmin }) => {
             <div className="space-y-2 text-xs text-slate-400">
               <div className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-teal-500 shrink-0 mt-0.5" />
-                <span>Jl. Kolonel Soetadji No. 1, Tanjung Selor Hilir, Kab. Bulungan, Kaltara 77212</span>
+                <span>{settings.address || 'Jl. Kolonel Soetadji No. 1, Tanjung Selor Hilir, Kab. Bulungan, Kaltara 77212'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-teal-500 shrink-0" />
-                <span className="font-mono">(0552) 21124</span>
+                <span className="font-mono">{settings.phone || '(0552) 21124'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-teal-500 shrink-0" />
-                <span className="font-mono text-teal-400">lablingkungan@bulungan.go.id</span>
+                <span className="font-mono text-teal-400">{settings.email || 'lablingkungan@bulungan.go.id'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-teal-500 shrink-0" />
@@ -221,13 +231,22 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenAdmin }) => {
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 space-y-1.5">
               <button
                 onClick={onOpenAdmin}
-                className="text-[11px] text-slate-500 hover:text-slate-300 underline cursor-pointer"
+                className="text-[11px] text-slate-400 hover:text-slate-200 underline cursor-pointer block"
               >
                 Login Petugas Laboratorium (CMS DLH)
               </button>
+
+              {onOpenLocalhostGuide && (
+                <button
+                  onClick={onOpenLocalhostGuide}
+                  className="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer flex items-center gap-1"
+                >
+                  <span>📦 Unduh ZIP Siap Pakai XAMPP (htdocs)</span>
+                </button>
+              )}
             </div>
           </div>
 

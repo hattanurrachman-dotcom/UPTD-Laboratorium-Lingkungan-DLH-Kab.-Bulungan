@@ -1,0 +1,39 @@
+========================================================================
+PANDUAN MENJALANKAN DI LOCALHOST XAMPP (HTDOCS)
+UPTD LABORATORIUM LINGKUNGAN DINAS LINGKUNGAN HIDUP KABUPATEN BULUNGAN
+========================================================================
+
+Aplikasi ini sudah dipaketkan SIAP PAKAI untuk web server Apache / XAMPP di komputer / laptop Anda.
+
+LANGKAH CEPAT (1 MENIT):
+------------------------------------------------------------------------
+1. Ekstrak file zip ini ke dalam direktori htdocs XAMPP Anda:
+   Contoh direktori di Windows:
+   C:\xampp\htdocs\lab-bulungan
+
+   (Pastikan di dalam folder C:\xampp\htdocs\lab-bulungan langsung terdapat
+    file index.html, index.php, dan folder assets)
+
+2. Buka aplikasi "XAMPP Control Panel" di komputer Anda.
+3. Pada baris "Apache", klik tombol [Start] hingga lampu status berubah menjadi HIJAU.
+4. Buka peramban / browser Anda (Google Chrome / Mozilla Firefox / Microsoft Edge).
+5. Ketikkan alamat URL berikut di browser:
+   http://localhost/lab-bulungan
+
+SELESAI!
+Aplikasi Website Resmi Laboratorium Lingkungan DLH Kab. Bulungan langsung aktif dan dapat digunakan di localhost XAMPP secara offline maupun di jaringan lokal kantor.
+
+FITUR LENGKAP YANG SUDAH AKTIF:
+- Katalog 45+ Parameter Uji Lingkungan KAN ISO/IEC 17025
+- Simulasi & Kalkulator Tarif Retribusi Perda Pemkab Bulungan
+- Formulir Pendaftaran Sampel Digital & Cetak Bukti Registrasi
+- Cetak LHP (Laporan Hasil Pengujian) & SKRD Format Standar A4
+- Pelacakan (Tracking) Sampel Real-time dengan QR-Code Validasi BSrE
+- Panel Petugas / Admin Laboratorium (CMS DLH)
+- Profil, Visi Misi, Alur SOP Mutu, dan Publikasi Berita Lingkungan
+
+========================================================================
+Pemerintah Kabupaten Bulungan
+Dinas Lingkungan Hidup - UPTD Laboratorium Lingkungan Hidup
+Jl. Kolonel Soetadji No. 1, Tanjung Selor Hilir, Kab. Bulungan, Kaltara
+========================================================================

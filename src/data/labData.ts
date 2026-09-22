@@ -1277,3 +1277,60 @@ export const INITIAL_COMPLAINT_TICKETS: ComplaintTicket[] = [
     response: 'Terima kasih atas konfirmasinya Bapak Rudi. Salinan kwitansi resmi telah kami stempel dan file scan PDF telah kami kirimkan ke email rudi.h@tambangkaltara.co.id. Dokumen fisik dapat diambil di loket TU pada jam kerja.'
   }
 ];
+
+export const DEFAULT_SITE_SETTINGS: import('../types').SiteSettings = {
+  agencyName: 'UPTD Laboratorium Lingkungan Hidup',
+  agencySub: 'Dinas Lingkungan Hidup Kabupaten Bulungan',
+  tagline: 'Layanan Pengujian Kualitas Lingkungan Terakreditasi KAN',
+  heroTitle: 'Layanan Pengujian Sampel Lingkungan Kabupaten Bulungan',
+  heroSubtitle: 'Mewujudkan kepastian data mutu lingkungan yang akurat, transparan, dan berdaya hukum untuk mendukung kelestarian Daerah Aliran Sungai (DAS) Kayan, industri sawit, tambang, dan kualitas hidup masyarakat Bumi Benuanta.',
+  kanAccreditationNumber: 'LP-1234-IDN',
+  kanAccreditationStd: 'SNI ISO/IEC 17025:2017',
+  runningText: 'Pemberitahuan: Layanan Pengujian Kualitas Air & Udara UPTD Lab Lingkungan DLH Bulungan beroperasi normal Senin - Jumat pukul 08.00 - 15.30 WITA di Jl. Kolonel Soetadji No. 1 Tanjung Selor.',
+  announcementActive: true,
+  phone: '(0552) 21155',
+  whatsapp: '0812-5099-2811',
+  email: 'lab.lingkungan@bulungan.go.id',
+  address: 'Jl. Kolonel Soetadji No. 1, Tanjung Selor Hilir, Kec. Tanjung Selor, Kabupaten Bulungan, Kalimantan Utara 77212',
+  workingHours: 'Senin - Kamis: 08.00 - 16.00 WITA | Jumat: 08.00 - 15.30 WITA',
+  visi: 'Menjadi Laboratorium Penguji Lingkungan yang Profesional, Independen, Akuntabel, dan Terpercaya di Provinsi Kalimantan Utara.',
+  misi: [
+    'Menghasilkan data pengujian kualitas lingkungan yang valid, teliti, dan tertelusur secara ilmiah.',
+    'Menerapkan sistem manajemen mutu laboratorium secara konsisten sesuai standar SNI ISO/IEC 17025.',
+    'Memberikan pelayanan pengujian yang cepat, tepat waktu, transparan, dan berorientasi pada kepuasan pelanggan.',
+    'Mendukung penegakan hukum dan pengawasan lingkungan hidup di Kabupaten Bulungan secara objektif.'
+  ],
+  maklumatPelayanan: 'Dengan ini kami pimpinan beserta seluruh staf UPTD Laboratorium Lingkungan Hidup DLH Kabupaten Bulungan berjanji dan menyatakan kesanggupan untuk menyelenggarakan pelayanan pengujian laboratorium sesuai dengan standar operasional yang telah ditetapkan, memberikan pelayanan secara prima, transparan, bebas dari pungutan liar, serta siap menerima sanksi sesuai ketentuan apabila tidak menepati janji layanan ini.',
+  mottoPelayanan: 'Cepat, Akurat, Terpercaya, dan Berintegritas (CATUR BERINTEGRITAS)'
+};
+
+export const DEFAULT_ADMIN_USERS: import('../types').AdminUser[] = [
+  {
+    username: 'admin',
+    name: 'Dra. Hj. Wahyuni, M.Si',
+    role: 'Administrator Utama',
+    nip: '19750415 199903 2 005',
+    lastLogin: '2026-09-21 21:00 WITA'
+  },
+  {
+    username: 'manajer.mutu',
+    name: 'Nur Aini, S.Si',
+    role: 'Manajer Mutu',
+    nip: '19880228 201402 2 001',
+    lastLogin: '2026-09-20 14:15 WITA'
+  },
+  {
+    username: 'manajer.teknis',
+    name: 'Ahmad Fauzi, S.T',
+    role: 'Manajer Teknis',
+    nip: '19840920 201001 1 018',
+    lastLogin: '2026-09-21 16:30 WITA'
+  },
+  {
+    username: 'petugas.loket',
+    name: 'Rahmadi, S.E',
+    role: 'Petugas Loket / TU',
+    nip: '19820311 200801 1 012',
+    lastLogin: '2026-09-21 08:30 WITA'
+  }
+];

@@ -151,3 +151,33 @@ export interface ComplaintTicket {
   status: 'Diterima' | 'Diproses' | 'Selesai Ditindaklanjuti';
   response?: string;
 }
+
+export interface AdminUser {
+  username: string;
+  name: string;
+  role: 'Administrator Utama' | 'Manajer Teknis' | 'Manajer Mutu' | 'Petugas Loket / TU';
+  nip?: string;
+  avatarUrl?: string;
+  lastLogin?: string;
+}
+
+export interface SiteSettings {
+  agencyName: string;
+  agencySub: string;
+  tagline: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  kanAccreditationNumber: string;
+  kanAccreditationStd: string;
+  runningText: string;
+  announcementActive: boolean;
+  phone: string;
+  whatsapp: string;
+  email: string;
+  address: string;
+  workingHours: string;
+  visi: string;
+  misi: string[];
+  maklumatPelayanan: string;
+  mottoPelayanan: string;
+}

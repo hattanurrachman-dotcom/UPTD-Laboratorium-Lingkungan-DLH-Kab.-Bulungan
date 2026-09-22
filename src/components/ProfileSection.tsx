@@ -12,10 +12,25 @@ import {
   Eye,
   Sparkles
 } from 'lucide-react';
-import { STAFF_MEMBERS, LAB_FACILITIES } from '../data/labData';
+import { STAFF_MEMBERS, LAB_FACILITIES, DEFAULT_SITE_SETTINGS } from '../data/labData';
+import { StaffMember, LabFacility, SiteSettings } from '../types';
 
-export const ProfileSection: React.FC = () => {
+interface ProfileSectionProps {
+  settings?: SiteSettings;
+  staffMembers?: StaffMember[];
+  labFacilities?: LabFacility[];
+}
+
+export const ProfileSection: React.FC<ProfileSectionProps> = ({
+  settings = DEFAULT_SITE_SETTINGS,
+  staffMembers = STAFF_MEMBERS,
+  labFacilities = LAB_FACILITIES,
+}) => {
   const [activeSubTab, setActiveSubTab] = useState<'tentang' | 'struktur' | 'akreditasi' | 'fasilitas'>('tentang');
+
+  const vision = settings.visi || DEFAULT_SITE_SETTINGS.visi;
+  const missions: string[] = settings.misi && settings.misi.length > 0 ? settings.misi : DEFAULT_SITE_SETTINGS.misi;
+  const maklumat = settings.maklumatPelayanan || DEFAULT_SITE_SETTINGS.maklumatPelayanan;
 
   return (
     <section className="py-12 bg-white min-h-[80vh]">
@@ -28,7 +43,7 @@ export const ProfileSection: React.FC = () => {
             <span>Profil Lembaga & Legalitas</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight font-serif-display">
-            UPTD Laboratorium Lingkungan Hidup Kab. Bulungan
+            {settings.agencyName || 'UPTD Laboratorium Lingkungan Hidup Kab. Bulungan'}
           </h2>
           <p className="mt-2 text-xs sm:text-sm text-slate-600">
             Unit Pelaksana Teknis Daerah yang bertugas melaksanakan pengujian laboratorium kualitas lingkungan hidup yang kredibel, terstandar, dan berintegritas.
@@ -54,7 +69,7 @@ export const ProfileSection: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Struktur Organisasi
+              Struktur Organisasi ({staffMembers.length})
             </button>
             <button
               onClick={() => setActiveSubTab('akreditasi')}
@@ -74,7 +89,7 @@ export const ProfileSection: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              SDM & Instrumen Lab
+              SDM & Instrumen Lab ({labFacilities.length})
             </button>
           </div>
         </div>
@@ -106,7 +121,7 @@ export const ProfileSection: React.FC = () => {
                     <span>Maklumat Pelayanan "MANTAP"</span>
                   </div>
                   <p className="text-xs text-slate-700 italic leading-relaxed">
-                    "Dengan ini kami menyatakan sanggup menyelenggarakan pelayanan pengujian laboratorium lingkungan sesuai standar pelayanan yang telah ditetapkan, serta siap menerima sanksi sesuai peraturan perundang-undangan apabila pelayanan yang diberikan tidak memuaskan."
+                    "{maklumat}"
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 mt-4 pt-3 border-t border-teal-200/60 text-center">
                     <div className="bg-white p-2 rounded-xl shadow-2xs">
@@ -177,7 +192,7 @@ export const ProfileSection: React.FC = () => {
                   VISI KAMI
                 </span>
                 <h4 className="text-lg sm:text-xl font-bold mt-3 font-serif-display leading-snug">
-                  "Menjadi Laboratorium Penguji Lingkungan yang Unggul, Akurat, dan Terpercaya di Wilayah Kalimantan Bagian Utara."
+                  "{vision}"
                 </h4>
                 <p className="text-xs text-teal-100 mt-3 leading-relaxed">
                   Berorientasi pada kepuasan pelanggan, kepatuhan baku mutu nasional, dan perlindungan ekologis ekosistem Sungai Kayan dan pesisir Bulungan.
@@ -189,22 +204,12 @@ export const ProfileSection: React.FC = () => {
                   MISI LABORATORIUM
                 </span>
                 <ul className="space-y-2.5 text-xs text-slate-700 pt-2">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
-                    <span>Menerapkan Sistem Manajemen Mutu laboratorium penguji secara konsisten sesuai SNI ISO/IEC 17025:2017.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
-                    <span>Menghasilkan data pengujian kualitas lingkungan yang valid, teliti, dan memiliki kepastian hukum.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
-                    <span>Meningkatkan kompetensi sumber daya manusia analis dan petugas pengambil contoh (PPC) secara berkelanjutan.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
-                    <span>Memberikan pelayanan publik yang transparan, mudah, dan bebas dari gratifikasi bagi seluruh pemangku kepentingan.</span>
-                  </li>
+                  {missions.map((missionText: string, idx: number) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                      <span>{missionText}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -392,7 +397,7 @@ export const ProfileSection: React.FC = () => {
         {activeSubTab === 'fasilitas' && (
           <div className="space-y-6 animate-fadeIn">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {LAB_FACILITIES.map((fac) => (
+              {labFacilities.map((fac) => (
                 <div
                   key={fac.id}
                   className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-teal-400 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"

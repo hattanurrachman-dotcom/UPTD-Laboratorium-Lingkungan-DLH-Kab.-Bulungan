@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   X, 
   Terminal, 
@@ -8,7 +8,11 @@ import {
   Laptop, 
   ExternalLink,
   Copy,
-  Check
+  Check,
+  Server,
+  FileCode,
+  Sparkles,
+  Info
 } from 'lucide-react';
 
 interface LocalhostGuideModalProps {
@@ -17,14 +21,22 @@ interface LocalhostGuideModalProps {
 }
 
 export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen, onClose }) => {
-  const [copied, setCopied] = React.useState(false);
+  const [copiedCmd, setCopiedCmd] = useState(false);
+  const [copiedPath, setCopiedPath] = useState(false);
+  const [activeOption, setActiveOption] = useState<'xampp' | 'node'>('xampp');
 
   if (!isOpen) return null;
 
-  const copyCommands = () => {
+  const copyNodeCommands = () => {
     navigator.clipboard.writeText(`npm install\nnpm run dev`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedCmd(true);
+    setTimeout(() => setCopiedCmd(false), 2000);
+  };
+
+  const copyXamppPath = () => {
+    navigator.clipboard.writeText(`C:\\xampp\\htdocs\\lab-bulungan`);
+    setCopiedPath(true);
+    setTimeout(() => setCopiedPath(false), 2000);
   };
 
   return (
@@ -34,15 +46,20 @@ export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen
         {/* Header */}
         <div className="flex items-start justify-between border-b border-slate-100 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-teal-800 text-amber-300 flex items-center justify-center shrink-0">
-              <FolderArchive className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-800 text-amber-300 flex items-center justify-center shrink-0 shadow-md">
+              <Server className="w-6 h-6 text-white" />
             </div>
             <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
-                PANDUAN EKSPOR & DEPLOYMENT
-              </span>
-              <h3 className="text-lg font-bold text-slate-900 mt-0.5 font-serif-display">
-                Jalankan Siap Pakai di Localhost (Komputer Anda)
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  SIAP PAKAI XAMPP & LOCALHOST
+                </span>
+                <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-1.5 py-0.2 rounded">
+                  Format .ZIP
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mt-1 font-serif-display">
+                Jalankan di Localhost XAMPP Komputer Anda
               </h3>
             </div>
           </div>
@@ -54,119 +71,211 @@ export const LocalhostGuideModal: React.FC<LocalhostGuideModalProps> = ({ isOpen
           </button>
         </div>
 
-        {/* Intro */}
-        <div className="text-xs sm:text-sm text-slate-600 leading-relaxed space-y-2">
-          <p>
-            Aplikasi <strong>Website Resmi UPTD Laboratorium Lingkungan DLH Kab. Bulungan</strong> ini dibangun secara mandiri, lengkap dengan seluruh data parameter, perhitungan tarif perda, alur SOP, tracking sampel ber-LHP digital, serta CMS Admin.
-          </p>
-          <p>
-            Anda dapat langsung mengekspor seluruh kode sumber ke dalam format <strong>.ZIP</strong> dan menjalankannya di laptop/PC tanpa instalasi database server yang rumit.
-          </p>
-        </div>
-
-        {/* Step-by-Step Instructions */}
-        <div className="space-y-4">
-          <h4 className="text-xs font-bold text-teal-800 uppercase tracking-wider">
-            Langkah-Langkah Menjalankan di Localhost:
-          </h4>
-
-          <div className="space-y-3 text-xs">
-            
-            {/* Step 1 */}
-            <div className="flex items-start gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
-              <span className="w-6 h-6 rounded-full bg-teal-800 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
-                1
-              </span>
-              <div>
-                <strong className="text-slate-900 block font-bold">Unduh File ZIP Proyek</strong>
-                <p className="text-slate-600 mt-0.5">
-                  Klik menu <strong>Export / Settings</strong> di pojok kanan atas layar AI Studio, lalu pilih opsi <strong>Download ZIP</strong>.
-                </p>
+        {/* Big Action Download Button for XAMPP */}
+        <div className="bg-gradient-to-br from-teal-900 via-teal-800 to-slate-900 rounded-2xl p-5 text-white shadow-md border border-teal-700">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="space-y-1 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-1.5 text-amber-300 text-xs font-bold">
+                <Sparkles className="w-4 h-4" />
+                <span>Paket Lengkap Siap Ekstrak (131 KB)</span>
               </div>
+              <h4 className="text-base font-bold text-white">
+                Download ZIP Siap Pakai untuk XAMPP
+              </h4>
+              <p className="text-xs text-teal-200 leading-relaxed max-w-md">
+                Sudah berisi compiled HTML, CSS, JS, <code className="bg-teal-950 px-1 rounded text-amber-200">index.php</code>, dan <code className="bg-teal-950 px-1 rounded text-amber-200">.htaccess</code> siap letak di folder <code className="text-white">htdocs</code>.
+              </p>
             </div>
 
-            {/* Step 2 */}
-            <div className="flex items-start gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
-              <span className="w-6 h-6 rounded-full bg-teal-800 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
-                2
-              </span>
-              <div>
-                <strong className="text-slate-900 block font-bold">Ekstrak File ZIP</strong>
-                <p className="text-slate-600 mt-0.5">
-                  Ekstrak file zip yang telah diunduh ke folder di laptop Anda (misalnya: <code className="bg-slate-200 px-1 rounded">C:\proyek\lab-dlh-bulungan</code>).
-                </p>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="flex items-start gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
-              <span className="w-6 h-6 rounded-full bg-teal-800 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
-                3
-              </span>
-              <div className="flex-1">
-                <strong className="text-slate-900 block font-bold">Buka Terminal & Jalankan Perintah</strong>
-                <p className="text-slate-600 mt-0.5 mb-2">
-                  Pastikan komputer Anda sudah terpasang <strong>Node.js</strong> (versi 18 atau 20+). Buka Command Prompt / PowerShell / Terminal pada folder tersebut:
-                </p>
-
-                {/* Code Terminal Box */}
-                <div className="bg-slate-900 text-slate-100 p-3 rounded-xl font-mono text-xs relative">
-                  <div className="text-slate-400 mb-1"># 1. Install semua dependensi (hanya sekali di awal)</div>
-                  <div className="text-emerald-400">npm install</div>
-                  <div className="text-slate-400 my-1"># 2. Jalankan server lokal (Vite Localhost)</div>
-                  <div className="text-amber-300">npm run dev</div>
-
-                  <button
-                    onClick={copyCommands}
-                    className="absolute top-2 right-2 p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[10px] flex items-center gap-1 cursor-pointer"
-                  >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copied ? 'Tersalin!' : 'Salin'}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 4 */}
-            <div className="flex items-start gap-3 p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200">
-              <span className="w-6 h-6 rounded-full bg-emerald-700 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
-                4
-              </span>
-              <div>
-                <strong className="text-slate-900 block font-bold">Akses di Web Browser Anda</strong>
-                <p className="text-slate-600 mt-0.5">
-                  Buka peramban (Chrome, Edge, Firefox) lalu ketikkan:
-                </p>
-                <div className="mt-1 font-mono font-bold text-teal-800 text-sm">
-                  http://localhost:3000 atau http://localhost:5173
-                </div>
-              </div>
-            </div>
-
+            <a
+              href="./lab-dlh-bulungan-xampp-siap-pakai.zip"
+              download="lab-dlh-bulungan-xampp-siap-pakai.zip"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95 cursor-pointer shrink-0"
+            >
+              <DownloadCloud className="w-4 h-4 text-slate-950" />
+              <span>UNDUH ZIP XAMPP</span>
+            </a>
           </div>
         </div>
 
-        {/* Feature Highlights */}
-        <div className="bg-teal-50 p-4 rounded-2xl border border-teal-200 text-teal-950 text-xs space-y-1.5">
-          <strong className="font-bold flex items-center gap-1.5">
+        {/* Tab Selection */}
+        <div className="flex border-b border-slate-200 text-xs">
+          <button
+            onClick={() => setActiveOption('xampp')}
+            className={`flex-1 py-2.5 font-bold border-b-2 transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+              activeOption === 'xampp'
+                ? 'border-teal-700 text-teal-800 bg-teal-50/50'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Server className="w-4 h-4" />
+            <span>Cara 1: Menggunakan XAMPP (Apache)</span>
+          </button>
+          <button
+            onClick={() => setActiveOption('node')}
+            className={`flex-1 py-2.5 font-bold border-b-2 transition-colors flex items-center justify-center gap-2 cursor-pointer ${
+              activeOption === 'node'
+                ? 'border-teal-700 text-teal-800 bg-teal-50/50'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Terminal className="w-4 h-4" />
+            <span>Cara 2: Menggunakan Node.js / Vite</span>
+          </button>
+        </div>
+
+        {/* Content Tab 1: XAMPP */}
+        {activeOption === 'xampp' && (
+          <div className="space-y-4">
+            <h4 className="text-xs font-bold text-teal-900 uppercase tracking-wider flex items-center gap-1.5">
+              <span>Langkah Menjalankan di XAMPP (3 Langkah Cepat):</span>
+            </h4>
+
+            <div className="space-y-3 text-xs">
+              
+              {/* Step 1 */}
+              <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <span className="w-7 h-7 rounded-xl bg-teal-800 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
+                  1
+                </span>
+                <div className="flex-1 space-y-1">
+                  <strong className="text-slate-900 font-bold block text-sm">
+                    Ekstrak ZIP ke Direktori XAMPP htdocs
+                  </strong>
+                  <p className="text-slate-600">
+                    Ekstrak file <code className="bg-slate-200 px-1 py-0.5 rounded text-slate-800">lab-dlh-bulungan-xampp-siap-pakai.zip</code> ke dalam folder:
+                  </p>
+                  
+                  <div className="flex items-center justify-between bg-white border border-slate-200 p-2.5 rounded-xl font-mono text-[11px] text-teal-900">
+                    <span>C:\xampp\htdocs\lab-bulungan</span>
+                    <button
+                      onClick={copyXamppPath}
+                      className="text-[10px] text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedPath ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedPath ? 'Disalin' : 'Salin Path'}</span>
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Pastikan di dalam folder tersebut terdapat file <code className="text-slate-700">index.html</code>, <code className="text-slate-700">index.php</code>, dan folder <code className="text-slate-700">assets/</code>.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <span className="w-7 h-7 rounded-xl bg-teal-800 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
+                  2
+                </span>
+                <div className="flex-1 space-y-1">
+                  <strong className="text-slate-900 font-bold block text-sm">
+                    Buka XAMPP Control Panel & Start Apache
+                  </strong>
+                  <p className="text-slate-600 leading-relaxed">
+                    Buka program <strong>XAMPP Control Panel</strong> di laptop/komputer Anda. Pada baris <strong>Apache</strong>, klik tombol <strong>[Start]</strong> hingga latar belakang teks berubah hijau.
+                  </p>
+                  <p className="text-[11px] text-slate-500 italic">
+                    (Tidak perlu mengaktifkan MySQL karena aplikasi sudah mandiri dengan basis data lokal persisten).
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex items-start gap-3 p-4 bg-emerald-50 rounded-2xl border border-emerald-200">
+                <span className="w-7 h-7 rounded-xl bg-emerald-700 text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
+                  3
+                </span>
+                <div className="flex-1 space-y-1">
+                  <strong className="text-slate-900 font-bold block text-sm">
+                    Buka Web Browser Anda
+                  </strong>
+                  <p className="text-slate-700">
+                    Buka Google Chrome, Microsoft Edge, atau Firefox dan buka alamat:
+                  </p>
+                  <div className="bg-white border border-emerald-300 p-2.5 rounded-xl font-mono font-bold text-teal-800 text-sm flex items-center justify-between">
+                    <span>http://localhost/lab-bulungan</span>
+                    <a
+                      href="http://localhost/lab-bulungan"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-teal-700 hover:text-teal-950 flex items-center gap-1 font-sans font-semibold"
+                    >
+                      <span>Buka Tab</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* Content Tab 2: Node.js */}
+        {activeOption === 'node' && (
+          <div className="space-y-4">
+            <h4 className="text-xs font-bold text-teal-900 uppercase tracking-wider">
+              Langkah Menjalankan Kode Sumber Lengkap dengan Node.js:
+            </h4>
+
+            <div className="space-y-3 text-xs">
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200">
+                <p className="text-slate-600 mb-2">
+                  Jika Anda ingin mengedit kode sumber React & TypeScript secara langsung:
+                </p>
+                <div className="bg-slate-900 text-slate-100 p-3 rounded-xl font-mono text-xs relative">
+                  <div className="text-slate-400 mb-1"># 1. Install semua dependensi</div>
+                  <div className="text-emerald-400">npm install</div>
+                  <div className="text-slate-400 my-1"># 2. Jalankan server lokal (Vite)</div>
+                  <div className="text-amber-300">npm run dev</div>
+
+                  <button
+                    onClick={copyNodeCommands}
+                    className="absolute top-2 right-2 p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[10px] flex items-center gap-1 cursor-pointer"
+                  >
+                    {copiedCmd ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedCmd ? 'Tersalin' : 'Salin'}</span>
+                  </button>
+                </div>
+                <p className="text-slate-600 mt-2">
+                  Akses di peramban pada alamat: <code className="font-bold text-teal-800">http://localhost:3000</code>.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Highlights */}
+        <div className="bg-teal-50/70 p-4 rounded-2xl border border-teal-200 text-teal-950 text-xs space-y-1.5">
+          <strong className="font-bold flex items-center gap-1.5 text-teal-900">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            <span>Kelebihan Paket Siap Pakai Ini:</span>
+            <span>Kelebihan Paket XAMPP Ini:</span>
           </strong>
           <ul className="list-disc pl-5 text-[11px] space-y-1 text-slate-700">
-            <li><strong>Portabel & Ringan:</strong> Menggunakan Vite + React + Tailwind CSS yang super cepat saat kompilasi.</li>
-            <li><strong>Data Lengkap Siap Presentasi:</strong> Sudah terisi data riil parameter uji SNI, matriks air limbah, air minum, air sungai, SOP, dan akreditasi KAN LP-1234-IDN.</li>
-            <li><strong>Cetak LHP & SKRD:</strong> Fitur cetak ramah printer kertas A4 (Print to PDF langsung dari browser).</li>
-            <li><strong>Panel Admin Aktif:</strong> Petugas dapat memperbarui status pengujian dari tahap pendaftaran hingga terbit LHP.</li>
+            <li><strong>Path Relatif Otomatis:</strong> Dapat ditempatkan di subfolder htdocs manapun tanpa error 404 (sudah dikonfigurasi dengan <code className="bg-teal-100 px-1 rounded">base: './'</code>).</li>
+            <li><strong>Dukungan File .htaccess:</strong> Mengaktifkan navigasi SPA dan kompresi MIME type di Apache.</li>
+            <li><strong>Fitur Cetak LHP Standar A4:</strong> Siap dicetak langsung ke PDF atau printer fisik dari browser tanpa memerlukan server tambahan.</li>
+            <li><strong>Bisa Dijalankan Offline:</strong> Tidak memerlukan koneksi internet untuk menguji simulasi tarif dan sistem registrasi sampel.</li>
           </ul>
         </div>
 
         {/* Action Button */}
-        <div className="flex justify-end pt-2 border-t border-slate-100">
+        <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+          <a
+            href="./PANDUAN_XAMPP.txt"
+            target="_blank"
+            download="PANDUAN_XAMPP.txt"
+            className="text-xs text-teal-700 hover:text-teal-900 font-semibold underline flex items-center gap-1"
+          >
+            <FileCode className="w-3.5 h-3.5" />
+            <span>Unduh Catatan Teks PANDUAN_XAMPP.txt</span>
+          </a>
+
           <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
+            className="px-6 py-2.5 bg-teal-800 hover:bg-teal-900 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
           >
-            Mengerti & Tutup Panduan
+            Tutup
           </button>
         </div>
 

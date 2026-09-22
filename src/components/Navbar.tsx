@@ -12,8 +12,12 @@ import {
   FileCheck2,
   ChevronDown,
   Building2,
-  BookOpen
+  BookOpen,
+  Lock,
+  LogOut,
+  Radio
 } from 'lucide-react';
+import { AdminUser, SiteSettings } from '../types';
 
 interface NavbarProps {
   activeTab: string;
@@ -23,6 +27,10 @@ interface NavbarProps {
   onOpenLocalhostGuide: () => void;
   isAdminMode: boolean;
   setIsAdminMode: (val: boolean) => void;
+  currentUser: AdminUser | null;
+  onOpenAdminLogin: () => void;
+  onLogout: () => void;
+  siteSettings?: SiteSettings;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -33,6 +41,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenLocalhostGuide,
   isAdminMode,
   setIsAdminMode,
+  currentUser,
+  onOpenAdminLogin,
+  onLogout,
+  siteSettings,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -48,29 +60,46 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs no-print">
       {/* Top Banner Pemerintah Kabupaten Bulungan & KAN */}
-      <div className="bg-gradient-to-r from-teal-900 via-teal-800 to-sky-900 text-white text-xs py-1.5 px-4 sm:px-6">
+      <div className="bg-gradient-to-r from-teal-900 via-teal-850 to-slate-900 text-white text-xs py-1.5 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1">
           <div className="flex items-center gap-2 text-center sm:text-left">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span className="font-semibold text-emerald-200">PEMERINTAH KABUPATEN BULUNGAN</span>
             <span className="hidden md:inline text-teal-300">|</span>
-            <span className="hidden md:inline text-teal-100">Dinas Lingkungan Hidup — UPTD Laboratorium Lingkungan</span>
+            <span className="hidden md:inline text-teal-100">
+              {siteSettings?.agencySub || 'Dinas Lingkungan Hidup'} — {siteSettings?.agencyName || 'UPTD Laboratorium Lingkungan'}
+            </span>
           </div>
           <div className="flex items-center gap-4 text-teal-100">
             <div className="flex items-center gap-1.5 bg-teal-950/60 px-2.5 py-0.5 rounded-full border border-teal-600/40 text-[11px]">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>Akreditasi KAN: <strong className="text-white">LP-1234-IDN</strong> (ISO/IEC 17025)</span>
+              <span>Akreditasi KAN: <strong className="text-white">{siteSettings?.kanAccreditationNumber || 'LP-1234-IDN'}</strong> ({siteSettings?.kanAccreditationStd || 'ISO/IEC 17025'})</span>
             </div>
             <a 
-              href="tel:081254332190" 
+              href={`tel:${siteSettings?.phone || '055221155'}`} 
               className="hidden lg:flex items-center gap-1 text-teal-200 hover:text-white transition-colors"
             >
               <PhoneCall className="w-3 h-3 text-amber-300" />
-              <span>Hotline: (0552) 21124 / 0812-5433-2190</span>
+              <span>Hotline: {siteSettings?.phone || '(0552) 21155'}</span>
             </a>
           </div>
         </div>
       </div>
+
+      {/* Running Text Announcement Marquee (If active) */}
+      {siteSettings?.announcementActive && siteSettings?.runningText && (
+        <div className="bg-amber-400 text-slate-950 text-[11px] font-bold py-1 px-4 border-b border-amber-500 overflow-hidden flex items-center shadow-inner">
+          <div className="flex items-center gap-1.5 shrink-0 pr-3 border-r border-amber-600 font-mono uppercase tracking-wider text-[10px] text-amber-950">
+            <Radio className="w-3 h-3 text-red-700 animate-pulse" />
+            <span>PENGUMUMAN:</span>
+          </div>
+          <div className="overflow-hidden whitespace-nowrap pl-3 w-full">
+            <div className="inline-block animate-marquee">
+              {siteSettings.runningText}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -92,9 +121,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             <div className="flex flex-col">
-              <span className="text-[11px] font-bold tracking-wider text-teal-700 uppercase">UPTD LAB LINGKUNGAN HIDUP</span>
+              <span className="text-[11px] font-bold tracking-wider text-teal-700 uppercase">
+                {siteSettings?.agencyName || 'UPTD LAB LINGKUNGAN HIDUP'}
+              </span>
               <span className="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight leading-tight">
-                DINAS LINGKUNGAN HIDUP
+                {siteSettings?.agencySub || 'DINAS LINGKUNGAN HIDUP'}
               </span>
               <span className="text-[11px] font-medium text-slate-500">
                 Kabupaten Bulungan, Kalimantan Utara
@@ -222,7 +253,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Action CTAs */}
-          <div className="hidden sm:flex items-center gap-2.5">
+          <div className="hidden sm:flex items-center gap-2">
             <button
               onClick={onOpenTrackingModal}
               className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg transition-all shadow-2xs cursor-pointer"
@@ -234,34 +265,57 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={onOpenSubmissionModal}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer"
             >
               <PlusCircle className="w-4 h-4 text-amber-300" />
-              <span>Daftar Sampel Baru</span>
+              <span>Daftar Sampel</span>
             </button>
 
-            {/* Localhost / Export Guide */}
+            {/* Localhost / XAMPP ZIP Siap Pakai Button */}
             <button
               onClick={onOpenLocalhostGuide}
-              className="p-2 text-slate-500 hover:text-teal-700 hover:bg-teal-50 rounded-lg border border-transparent hover:border-teal-200 transition-colors cursor-pointer"
-              title="Panduan Menjalankan pada Localhost (Zip Siap Pakai)"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-lg transition-all cursor-pointer shadow-2xs group"
+              title="Unduh Paket ZIP Siap Pakai untuk Localhost XAMPP (htdocs)"
             >
-              <DownloadCloud className="w-4 h-4" />
+              <DownloadCloud className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
+              <span className="hidden xl:inline">ZIP XAMPP</span>
             </button>
 
-            {/* Toggle Mode Admin / Staf Lab */}
-            <button
-              onClick={() => setIsAdminMode(!isAdminMode)}
-              className={`p-2 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1 cursor-pointer ${
-                isAdminMode 
-                  ? 'bg-amber-100 text-amber-900 border-amber-300 font-semibold' 
-                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-              }`}
-              title="Beralih ke Dashboard Pengelolaan Laboratorium"
-            >
-              <UserCog className={`w-4 h-4 ${isAdminMode ? 'text-amber-700' : 'text-slate-500'}`} />
-              <span className="hidden xl:inline">{isAdminMode ? 'Mode Admin Aktif' : 'Portal Staf'}</span>
-            </button>
+            {/* Admin Login / CMS Button */}
+            {currentUser ? (
+              <div className="flex items-center gap-1.5 pl-1">
+                <button
+                  onClick={() => setIsAdminMode(!isAdminMode)}
+                  className={`px-3 py-2 rounded-lg text-xs font-bold border transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs ${
+                    isAdminMode 
+                      ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 border-amber-400 font-bold' 
+                      : 'bg-teal-900 hover:bg-teal-800 text-amber-300 border-teal-700'
+                  }`}
+                  title={isAdminMode ? 'Kembali ke Tampilan Publik' : 'Buka Dashboard Kelola Menu'}
+                >
+                  <UserCog className="w-3.5 h-3.5 text-amber-300" />
+                  <span className="hidden xl:inline">{isAdminMode ? 'Kembali ke Publik' : 'Kelola Semua Menu'}</span>
+                  <span className="xl:hidden">Admin</span>
+                </button>
+
+                <button
+                  onClick={onLogout}
+                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                  title={`Logout (${currentUser.name})`}
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={onOpenAdminLogin}
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-lg transition-all cursor-pointer shadow-2xs"
+                title="Login Petugas / Administrator untuk Mengedit Semua Menu"
+              >
+                <Lock className="w-3.5 h-3.5 text-amber-600" />
+                <span>Login Admin</span>
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -347,21 +401,45 @@ export const Navbar: React.FC<NavbarProps> = ({
             Kontak & Lokasi Laboratorium
           </button>
 
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-            <button
-              onClick={() => { setIsAdminMode(!isAdminMode); setIsMobileMenuOpen(false); }}
-              className="text-xs text-amber-800 bg-amber-50 px-3 py-2 rounded-lg font-medium border border-amber-200 flex items-center gap-1.5"
-            >
-              <UserCog className="w-4 h-4 text-amber-600" />
-              <span>{isAdminMode ? 'Keluar Mode Staf' : 'Buka Portal Staf Lab'}</span>
-            </button>
+          <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+            {currentUser ? (
+              <div className="flex items-center justify-between bg-teal-50 p-2.5 rounded-xl border border-teal-200">
+                <div>
+                  <div className="font-bold text-teal-950 text-xs">{currentUser.name}</div>
+                  <div className="text-[10px] text-teal-700">{currentUser.role}</div>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => { setIsAdminMode(!isAdminMode); setIsMobileMenuOpen(false); }}
+                    className="px-2.5 py-1.5 bg-teal-800 text-white rounded-lg text-xs font-bold"
+                  >
+                    {isAdminMode ? 'Tampilan Publik' : 'Kelola Menu'}
+                  </button>
+                  <button
+                    onClick={() => { onLogout(); setIsMobileMenuOpen(false); }}
+                    className="p-1.5 text-rose-600 hover:bg-rose-100 rounded-lg text-xs"
+                    title="Logout"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => { onOpenAdminLogin(); setIsMobileMenuOpen(false); }}
+                className="w-full text-xs text-amber-900 bg-amber-100 px-3 py-2.5 rounded-lg font-bold border border-amber-300 flex items-center justify-center gap-1.5"
+              >
+                <Lock className="w-4 h-4 text-amber-700" />
+                <span>Login Admin (Edit Semua Menu Website)</span>
+              </button>
+            )}
 
             <button
               onClick={() => { onOpenLocalhostGuide(); setIsMobileMenuOpen(false); }}
-              className="text-xs text-teal-700 bg-teal-50 px-3 py-2 rounded-lg font-medium border border-teal-200 flex items-center gap-1.5"
+              className="w-full text-xs text-emerald-800 bg-emerald-50 px-3 py-2 rounded-lg font-bold border border-emerald-300 flex items-center justify-center gap-1.5"
             >
-              <DownloadCloud className="w-4 h-4" />
-              <span>Panduan Localhost</span>
+              <DownloadCloud className="w-4 h-4 text-emerald-600" />
+              <span>Unduh ZIP XAMPP (Localhost)</span>
             </button>
           </div>
         </div>

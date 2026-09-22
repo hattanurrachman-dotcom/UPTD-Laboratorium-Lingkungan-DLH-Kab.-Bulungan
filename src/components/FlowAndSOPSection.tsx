@@ -16,10 +16,12 @@ import { SOPDocument } from '../types';
 
 interface FlowAndSOPSectionProps {
   onOpenSubmissionModal: () => void;
+  sopDocuments?: SOPDocument[];
 }
 
 export const FlowAndSOPSection: React.FC<FlowAndSOPSectionProps> = ({
   onOpenSubmissionModal,
+  sopDocuments = SOP_DOCUMENTS,
 }) => {
   const [selectedSOP, setSelectedSOP] = useState<SOPDocument | null>(null);
 
@@ -153,7 +155,7 @@ export const FlowAndSOPSection: React.FC<FlowAndSOPSectionProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {SOP_DOCUMENTS.map((sop) => (
+            {sopDocuments.map((sop) => (
               <div
                 key={sop.id}
                 className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-teal-300 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between"

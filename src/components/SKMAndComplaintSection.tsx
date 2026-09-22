@@ -15,11 +15,23 @@ import {
 import { SKM_QUESTIONS, INITIAL_SKM_FEEDBACKS, INITIAL_COMPLAINT_TICKETS } from '../data/labData';
 import { SKMFeedback, ComplaintTicket } from '../types';
 
-export const SKMAndComplaintSection: React.FC = () => {
+interface SKMAndComplaintSectionProps {
+  complaints?: ComplaintTicket[];
+  feedbacks?: SKMFeedback[];
+  onAddComplaint?: (newComplaint: ComplaintTicket) => void;
+  onAddFeedback?: (newFeedback: SKMFeedback) => void;
+}
+
+export const SKMAndComplaintSection: React.FC<SKMAndComplaintSectionProps> = ({
+  complaints: initialComplaints = INITIAL_COMPLAINT_TICKETS,
+  feedbacks: initialFeedbacks = INITIAL_SKM_FEEDBACKS,
+  onAddComplaint,
+  onAddFeedback,
+}) => {
   const [activeTab, setActiveTab] = useState<'skm' | 'pengaduan'>('skm');
 
   // SKM Form State
-  const [feedbacks, setFeedbacks] = useState<SKMFeedback[]>(INITIAL_SKM_FEEDBACKS);
+  const [feedbacks, setFeedbacks] = useState<SKMFeedback[]>(initialFeedbacks);
   const [skmName, setSkmName] = useState('');
   const [skmInstitution, setSkmInstitution] = useState('');
   const [skmComment, setSkmComment] = useState('');
@@ -29,13 +41,22 @@ export const SKMAndComplaintSection: React.FC = () => {
   const [skmSubmitted, setSkmSubmitted] = useState(false);
 
   // Complaint Form State
-  const [complaints, setComplaints] = useState<ComplaintTicket[]>(INITIAL_COMPLAINT_TICKETS);
+  const [complaints, setComplaints] = useState<ComplaintTicket[]>(initialComplaints);
   const [complaintName, setComplaintName] = useState('');
   const [complaintEmail, setComplaintEmail] = useState('');
   const [complaintPhone, setComplaintPhone] = useState('');
   const [complaintSubject, setComplaintSubject] = useState('');
   const [complaintMessage, setComplaintMessage] = useState('');
   const [complaintSubmitted, setComplaintSubmitted] = useState<ComplaintTicket | null>(null);
+
+  // Sync if props update
+  React.useEffect(() => {
+    if (initialComplaints) setComplaints(initialComplaints);
+  }, [initialComplaints]);
+
+  React.useEffect(() => {
+    if (initialFeedbacks) setFeedbacks(initialFeedbacks);
+  }, [initialFeedbacks]);
 
   // Compute aggregate IKM Score (out of 100)
   const ikmScore = 88.6; // Kategori A (Sangat Baik)
@@ -64,6 +85,7 @@ export const SKMAndComplaintSection: React.FC = () => {
     };
 
     setFeedbacks([newFeedback, ...feedbacks]);
+    if (onAddFeedback) onAddFeedback(newFeedback);
     setSkmSubmitted(true);
   };
 
@@ -91,6 +113,7 @@ export const SKMAndComplaintSection: React.FC = () => {
     };
 
     setComplaints([newComplaint, ...complaints]);
+    if (onAddComplaint) onAddComplaint(newComplaint);
     setComplaintSubmitted(newComplaint);
   };
 

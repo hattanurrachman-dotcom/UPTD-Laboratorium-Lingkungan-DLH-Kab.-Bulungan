@@ -12,17 +12,20 @@ import {
   Award,
   Sparkles
 } from 'lucide-react';
+import { SiteSettings } from '../types';
 
 interface HeroProps {
   onOpenSubmissionModal: () => void;
   onOpenTrackingModal: (initialCode?: string) => void;
   onNavigateToTab: (tab: string) => void;
+  settings?: SiteSettings;
 }
 
 export const Hero: React.FC<HeroProps> = ({
   onOpenSubmissionModal,
   onOpenTrackingModal,
   onNavigateToTab,
+  settings,
 }) => {
   const [quickTrackingCode, setQuickTrackingCode] = useState('');
 
@@ -55,20 +58,30 @@ export const Hero: React.FC<HeroProps> = ({
               <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
               <span>Laboratorium Penguji Terakreditasi KAN:</span>
               <strong className="text-white font-mono bg-teal-950/80 px-2 py-0.5 rounded text-amber-300">
-                LP-1234-IDN
+                {settings?.kanAccreditationNumber || 'LP-1234-IDN'}
               </strong>
-              <span className="text-teal-300 hidden sm:inline">• SNI ISO/IEC 17025:2017</span>
+              <span className="text-teal-300 hidden sm:inline">• {settings?.kanAccreditationStd || 'SNI ISO/IEC 17025:2017'}</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight font-serif-display">
-              Layanan Pengujian Sampel Lingkungan <br className="hidden sm:inline" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-sky-200 to-amber-300">
-                Kabupaten Bulungan
-              </span>
+              {settings?.heroTitle ? (
+                <span>{settings.heroTitle}</span>
+              ) : (
+                <>
+                  Layanan Pengujian Sampel Lingkungan <br className="hidden sm:inline" />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-sky-200 to-amber-300">
+                    Kabupaten Bulungan
+                  </span>
+                </>
+              )}
             </h1>
 
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl font-light">
-              Mewujudkan kepastian data mutu lingkungan yang <strong>akurat, transparan, dan berdaya hukum</strong> untuk mendukung kelestarian Daerah Aliran Sungai (DAS) Kayan, industri sawit, tambang, dan kualitas hidup masyarakat Bumi Benuanta.
+              {settings?.heroSubtitle || (
+                <>
+                  Mewujudkan kepastian data mutu lingkungan yang <strong>akurat, transparan, dan berdaya hukum</strong> untuk mendukung kelestarian Daerah Aliran Sungai (DAS) Kayan, industri sawit, tambang, dan kualitas hidup masyarakat Bumi Benuanta.
+                </>
+              )}
             </p>
 
             {/* Quick Tracking Search Box */}

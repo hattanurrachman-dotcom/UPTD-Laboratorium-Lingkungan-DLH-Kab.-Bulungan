@@ -13,14 +13,20 @@ import {
   Wind
 } from 'lucide-react';
 import { NEWS_ARTICLES } from '../data/labData';
-import { NewsArticle } from '../types';
+import { NewsArticle, NewsItem } from '../types';
 import { formatDateIndo } from '../utils/helpers';
 
-export const NewsSection: React.FC = () => {
+interface NewsSectionProps {
+  news?: NewsItem[];
+}
+
+export const NewsSection: React.FC<NewsSectionProps> = ({ news }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
 
-  const filteredNews = NEWS_ARTICLES.filter((article) => {
+  const articlesList = news && news.length > 0 ? news : NEWS_ARTICLES;
+
+  const filteredNews = articlesList.filter((article) => {
     if (selectedCategory === 'all') return true;
     return article.category.toLowerCase() === selectedCategory.toLowerCase();
   });

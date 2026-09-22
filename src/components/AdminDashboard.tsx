@@ -19,32 +19,87 @@ import {
   Eye,
   Check,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  Building2,
+  GitFork,
+  MessageSquareWarning,
+  LogOut,
+  Globe,
+  Sliders
 } from 'lucide-react';
-import { SampleRequest, SampleStatus, TestParameter, NewsArticle } from '../types';
+import { 
+  SampleRequest, 
+  SampleStatus, 
+  TestParameter, 
+  NewsArticle, 
+  AdminUser, 
+  SiteSettings, 
+  StaffMember, 
+  LabFacility, 
+  SOPDocument, 
+  ComplaintTicket, 
+  SKMFeedback 
+} from '../types';
 import { formatRupiah, formatDateIndo, getStatusInfo, getMatrixInfo } from '../utils/helpers';
 import { LHPModal } from './LHPModal';
+import { AdminSiteSettingsTab } from './admin/AdminSiteSettingsTab';
+import { AdminProfileTab } from './admin/AdminProfileTab';
+import { AdminSOPTab } from './admin/AdminSOPTab';
+import { AdminComplaintsTab } from './admin/AdminComplaintsTab';
 
 interface AdminDashboardProps {
-  samples: SampleRequest[];
-  onUpdateSample: (sample: SampleRequest) => void;
+  currentUser?: AdminUser | null;
+  onLogout: () => void;
+  onExitAdmin: () => void;
+  // Menu 1 & 7: Site Settings
+  siteSettings: SiteSettings;
+  onUpdateSiteSettings: (settings: SiteSettings) => void;
+  // Menu 2: Profile & Staff & Facilities
+  staffMembers: StaffMember[];
+  onUpdateStaffMembers: (staff: StaffMember[]) => void;
+  labFacilities: LabFacility[];
+  onUpdateLabFacilities: (facilities: LabFacility[]) => void;
+  // Menu 3: Parameters
   parameters: TestParameter[];
   onUpdateParameters: (params: TestParameter[]) => void;
+  // Menu 4: SOP Documents
+  sopDocuments: SOPDocument[];
+  onUpdateSOPDocuments: (sops: SOPDocument[]) => void;
+  // Menu 5: Samples Tracking
+  samples: SampleRequest[];
+  onUpdateSample: (sample: SampleRequest) => void;
+  // Menu 6: News
   news: NewsArticle[];
   onUpdateNews: (news: NewsArticle[]) => void;
-  onExitAdmin: () => void;
+  // Menu 7: Complaints & SKM
+  complaints: ComplaintTicket[];
+  onUpdateComplaints: (complaints: ComplaintTicket[]) => void;
+  feedbacks: SKMFeedback[];
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
-  samples,
-  onUpdateSample,
+  currentUser,
+  onLogout,
+  onExitAdmin,
+  siteSettings,
+  onUpdateSiteSettings,
+  staffMembers,
+  onUpdateStaffMembers,
+  labFacilities,
+  onUpdateLabFacilities,
   parameters,
   onUpdateParameters,
+  sopDocuments,
+  onUpdateSOPDocuments,
+  samples,
+  onUpdateSample,
   news,
   onUpdateNews,
-  onExitAdmin,
+  complaints,
+  onUpdateComplaints,
+  feedbacks,
 }) => {
-  const [activeTab, setActiveTab] = useState<'samples' | 'parameters' | 'news' | 'stats'>('samples');
+  const [activeTab, setActiveTab] = useState<'samples' | 'parameters' | 'profile' | 'sop' | 'news' | 'skm_complaints' | 'site_settings' | 'stats'>('samples');
   const [searchFilter, setSearchFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [matrixFilter, setMatrixFilter] = useState<string>('all');
@@ -141,19 +196,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     <div className="bg-slate-100 min-h-screen pb-16">
       
       {/* Top Admin Header Bar */}
-      <div className="bg-slate-900 text-white px-4 sm:px-8 py-4 border-b border-slate-800 shadow-md sticky top-0 z-40">
+      <div className="bg-slate-900 text-white px-4 sm:px-8 py-3.5 border-b border-slate-800 shadow-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-teal-600 flex items-center justify-center font-bold text-white shadow-xs">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-700 to-teal-900 flex items-center justify-center font-bold text-white shadow-xs border border-teal-600/30">
               <LayoutDashboard className="w-5 h-5 text-amber-300" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-bold text-white">
+                <h1 className="text-sm sm:text-base font-bold text-white font-serif-display">
                   Sistem Informasi & Manajemen Laboratorium (SIM-LAB)
                 </h1>
-                <span className="text-[10px] font-mono bg-teal-900 text-teal-300 border border-teal-700 px-2 py-0.2 rounded font-bold">
-                  ADMIN DLH
+                <span className="text-[10px] font-mono bg-teal-900/80 text-teal-300 border border-teal-700 px-2 py-0.5 rounded font-bold">
+                  {currentUser?.role || 'ADMIN DLH'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
@@ -162,12 +217,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            {currentUser && (
+              <div className="hidden md:flex flex-col text-right pr-2 border-r border-slate-700">
+                <span className="text-xs font-bold text-slate-200">{currentUser.name}</span>
+                <span className="text-[10px] text-teal-400 font-mono">
+                  {currentUser.nip ? `NIP: ${currentUser.nip}` : `@${currentUser.username}`}
+                </span>
+              </div>
+            )}
+
             <button
               onClick={onExitAdmin}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-colors cursor-pointer flex items-center gap-1.5"
+              title="Kembali ke halaman publik pengunjung"
             >
-              Lihat Tampilan Publik
+              <Globe className="w-3.5 h-3.5 text-teal-400" />
+              <span>Tampilan Publik</span>
+            </button>
+
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 bg-rose-950/60 hover:bg-rose-900 text-rose-200 text-xs font-semibold rounded-xl border border-rose-800 transition-colors cursor-pointer flex items-center gap-1.5"
+              title="Keluar dari sesi administrator"
+            >
+              <LogOut className="w-3.5 h-3.5 text-rose-400" />
+              <span>Keluar</span>
             </button>
           </div>
         </div>
@@ -210,54 +285,102 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex border-b border-slate-300 gap-2 mb-6 overflow-x-auto text-xs font-bold">
+        {/* Navigation Tabs - All Menus of DLH Bulungan */}
+        <div className="flex border-b border-slate-300 gap-1.5 mb-6 overflow-x-auto text-xs font-bold scrollbar-thin pb-1">
           <button
             onClick={() => setActiveTab('samples')}
-            className={`py-2.5 px-4 rounded-t-xl transition-all cursor-pointer flex items-center gap-2 ${
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
               activeTab === 'samples'
-                ? 'bg-white text-teal-800 border-t-2 border-teal-600 shadow-xs'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
             }`}
           >
             <FlaskConical className="w-4 h-4 text-teal-600" />
-            <span>Kelola Sampel & Hasil Uji ({samples.length})</span>
+            <span>Sampel & LHP ({samples.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('parameters')}
-            className={`py-2.5 px-4 rounded-t-xl transition-all cursor-pointer flex items-center gap-2 ${
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
               activeTab === 'parameters'
-                ? 'bg-white text-teal-800 border-t-2 border-teal-600 shadow-xs'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
             }`}
           >
             <Settings className="w-4 h-4 text-teal-600" />
-            <span>Tarif & Parameter Laboratorium ({parameters.length})</span>
+            <span>Tarif & Parameter ({parameters.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              activeTab === 'profile'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
+            }`}
+          >
+            <Building2 className="w-4 h-4 text-teal-600" />
+            <span>Profil, Staf & Alat ({staffMembers.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('sop')}
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              activeTab === 'sop'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
+            }`}
+          >
+            <GitFork className="w-4 h-4 text-teal-600" />
+            <span>Alur & SOP KAN ({sopDocuments.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('news')}
-            className={`py-2.5 px-4 rounded-t-xl transition-all cursor-pointer flex items-center gap-2 ${
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
               activeTab === 'news'
-                ? 'bg-white text-teal-800 border-t-2 border-teal-600 shadow-xs'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
             }`}
           >
             <Newspaper className="w-4 h-4 text-teal-600" />
-            <span>Kelola Berita & Publikasi ({news.length})</span>
+            <span>Berita & Publikasi ({news.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('skm_complaints')}
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              activeTab === 'skm_complaints'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
+            }`}
+          >
+            <MessageSquareWarning className="w-4 h-4 text-teal-600" />
+            <span>SKM & Pengaduan ({complaints.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('site_settings')}
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              activeTab === 'site_settings'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
+            }`}
+          >
+            <Sliders className="w-4 h-4 text-teal-600" />
+            <span>Beranda & Kontak</span>
           </button>
 
           <button
             onClick={() => setActiveTab('stats')}
-            className={`py-2.5 px-4 rounded-t-xl transition-all cursor-pointer flex items-center gap-2 ${
+            className={`py-2.5 px-3.5 rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
               activeTab === 'stats'
-                ? 'bg-white text-teal-800 border-t-2 border-teal-600 shadow-xs'
+                ? 'bg-white text-teal-900 border-t-2 border-teal-600 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 bg-slate-200/60'
             }`}
           >
             <BarChart3 className="w-4 h-4 text-teal-600" />
-            <span>Rekapitulasi Layanan & Ekspor</span>
+            <span>Laporan Retribusi</span>
           </button>
         </div>
 
@@ -618,6 +741,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </button>
             </div>
           </div>
+        )}
+
+        {/* TAB 5: PROFILE, STAFF & FACILITIES */}
+        {activeTab === 'profile' && (
+          <AdminProfileTab
+            settings={siteSettings}
+            onUpdateSettings={onUpdateSiteSettings}
+            staffMembers={staffMembers}
+            onUpdateStaffMembers={onUpdateStaffMembers}
+            labFacilities={labFacilities}
+            onUpdateLabFacilities={onUpdateLabFacilities}
+          />
+        )}
+
+        {/* TAB 6: ALUR & SOP KAN */}
+        {activeTab === 'sop' && (
+          <AdminSOPTab
+            sopDocuments={sopDocuments}
+            onUpdateSOPDocuments={onUpdateSOPDocuments}
+          />
+        )}
+
+        {/* TAB 7: SKM & COMPLAINTS */}
+        {activeTab === 'skm_complaints' && (
+          <AdminComplaintsTab
+            complaints={complaints}
+            onUpdateComplaints={onUpdateComplaints}
+            feedbacks={feedbacks}
+          />
+        )}
+
+        {/* TAB 8: BERANDA & SITE SETTINGS */}
+        {activeTab === 'site_settings' && (
+          <AdminSiteSettingsTab
+            settings={siteSettings}
+            onSaveSettings={onUpdateSiteSettings}
+          />
         )}
 
       </div>

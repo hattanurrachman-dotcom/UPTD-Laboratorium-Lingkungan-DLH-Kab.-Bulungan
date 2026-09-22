@@ -18,10 +18,12 @@ import { formatRupiah, getMatrixInfo } from '../utils/helpers';
 
 interface TariffCalculatorProps {
   onOpenSubmissionModal: () => void;
+  parameters?: TestParameter[];
 }
 
 export const TariffCalculator: React.FC<TariffCalculatorProps> = ({
   onOpenSubmissionModal,
+  parameters = LAB_PARAMETERS,
 }) => {
   const [selectedMatrix, setSelectedMatrix] = useState<MatrixType | 'all'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -30,7 +32,7 @@ export const TariffCalculator: React.FC<TariffCalculatorProps> = ({
 
   // Filtered parameters
   const filteredParams = useMemo(() => {
-    return LAB_PARAMETERS.filter((p) => {
+    return parameters.filter((p) => {
       const matchMatrix = selectedMatrix === 'all' || p.matrix === selectedMatrix;
       const matchCategory = selectedCategory === 'all' || p.category === selectedCategory;
       const matchQuery = 
@@ -39,15 +41,15 @@ export const TariffCalculator: React.FC<TariffCalculatorProps> = ({
         p.methodSNI.toLowerCase().includes(searchQuery.toLowerCase());
       return matchMatrix && matchCategory && matchQuery;
     });
-  }, [selectedMatrix, selectedCategory, searchQuery]);
+  }, [parameters, selectedMatrix, selectedCategory, searchQuery]);
 
   // Cart total cost
   const cartTotal = useMemo(() => {
     return cartParamIds.reduce((sum, id) => {
-      const param = LAB_PARAMETERS.find(p => p.id === id);
+      const param = parameters.find(p => p.id === id);
       return sum + (param ? param.price : 0);
     }, 0);
-  }, [cartParamIds]);
+  }, [parameters, cartParamIds]);
 
   const toggleCartParam = (id: string) => {
     setCartParamIds(prev => 
@@ -303,7 +305,7 @@ export const TariffCalculator: React.FC<TariffCalculatorProps> = ({
               <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
                 {cartParamIds.length > 0 ? (
                   cartParamIds.map((id) => {
-                    const param = LAB_PARAMETERS.find(p => p.id === id);
+                    const param = parameters.find(p => p.id === id);
                     if (!param) return null;
                     return (
                       <div

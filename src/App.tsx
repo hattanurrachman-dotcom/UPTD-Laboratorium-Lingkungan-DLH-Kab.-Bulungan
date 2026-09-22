@@ -11,35 +11,232 @@ import { NewsSection } from './components/NewsSection';
 import { SKMAndComplaintSection } from './components/SKMAndComplaintSection';
 import { ContactSection } from './components/ContactSection';
 import { AdminDashboard } from './components/AdminDashboard';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import { LocalhostGuideModal } from './components/LocalhostGuideModal';
 import { Footer } from './components/Footer';
 
 import { 
   INITIAL_SAMPLE_REQUESTS, 
   LAB_PARAMETERS, 
-  NEWS_ITEMS 
+  NEWS_ITEMS,
+  DEFAULT_SITE_SETTINGS,
+  STAFF_MEMBERS,
+  LAB_FACILITIES,
+  SOP_DOCUMENTS,
+  INITIAL_COMPLAINT_TICKETS,
+  INITIAL_SKM_FEEDBACKS
 } from './data/labData';
-import { SampleRequest, TestParameter, NewsItem } from './types';
+import { 
+  SampleRequest, 
+  TestParameter, 
+  NewsItem,
+  SiteSettings,
+  StaffMember,
+  LabFacility,
+  SOPDocument,
+  ComplaintTicket,
+  SKMFeedback,
+  AdminUser
+} from './types';
 import { 
   CheckCircle2, 
   ArrowRight, 
-  Search, 
-  Download, 
-  Building2, 
-  ShieldCheck, 
-  GitFork, 
   Calculator,
-  Newspaper
+  Newspaper,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('beranda');
   const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
   
-  // Application Data States
-  const [samples, setSamples] = useState<SampleRequest[]>(INITIAL_SAMPLE_REQUESTS);
-  const [parameters, setParameters] = useState<TestParameter[]>(LAB_PARAMETERS);
-  const [news, setNews] = useState<NewsItem[]>(NEWS_ITEMS);
+  // Auth state
+  const [currentUser, setCurrentUser] = useState<AdminUser | null>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_admin_auth');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  // Application Data States with local storage sync
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_site_settings');
+      return saved ? JSON.parse(saved) : DEFAULT_SITE_SETTINGS;
+    } catch {
+      return DEFAULT_SITE_SETTINGS;
+    }
+  });
+
+  const [staffMembers, setStaffMembers] = useState<StaffMember[]>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_staff_members');
+      return saved ? JSON.parse(saved) : STAFF_MEMBERS;
+    } catch {
+      return STAFF_MEMBERS;
+    }
+  });
+
+  const [labFacilities, setLabFacilities] = useState<LabFacility[]>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_lab_facilities');
+      return saved ? JSON.parse(saved) : LAB_FACILITIES;
+    } catch {
+      return LAB_FACILITIES;
+    }
+  });
+
+  const [sopDocuments, setSopDocuments] = useState<SOPDocument[]>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_sop_documents');
+      return saved ? JSON.parse(saved) : SOP_DOCUMENTS;
+    } catch {
+      return SOP_DOCUMENTS;
+    }
+  });
+
+  const [complaints, setComplaints] = useState<ComplaintTicket[]>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_complaints');
+      return saved ? JSON.parse(saved) : INITIAL_COMPLAINT_TICKETS;
+    } catch {
+      return INITIAL_COMPLAINT_TICKETS;
+    }
+  });
+
+  const [feedbacks, setFeedbacks] = useState<SKMFeedback[]>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_feedbacks');
+      return saved ? JSON.parse(saved) : INITIAL_SKM_FEEDBACKS;
+    } catch {
+      return INITIAL_SKM_FEEDBACKS;
+    }
+  });
+
+  const [samples, setSamples] = useState<SampleRequest[]>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_samples');
+      return saved ? JSON.parse(saved) : INITIAL_SAMPLE_REQUESTS;
+    } catch {
+      return INITIAL_SAMPLE_REQUESTS;
+    }
+  });
+
+  const [parameters, setParameters] = useState<TestParameter[]>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_parameters');
+      return saved ? JSON.parse(saved) : LAB_PARAMETERS;
+    } catch {
+      return LAB_PARAMETERS;
+    }
+  });
+
+  const [news, setNews] = useState<NewsItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('dlh_news');
+      return saved ? JSON.parse(saved) : NEWS_ITEMS;
+    } catch {
+      return NEWS_ITEMS;
+    }
+  });
+
+  // Handlers with persistence
+  const handleUpdateSiteSettings = (settings: SiteSettings) => {
+    setSiteSettings(settings);
+    try {
+      localStorage.setItem('dlh_site_settings', JSON.stringify(settings));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateStaffMembers = (staff: StaffMember[]) => {
+    setStaffMembers(staff);
+    try {
+      localStorage.setItem('dlh_staff_members', JSON.stringify(staff));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateLabFacilities = (facilities: LabFacility[]) => {
+    setLabFacilities(facilities);
+    try {
+      localStorage.setItem('dlh_lab_facilities', JSON.stringify(facilities));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateSOPDocuments = (sops: SOPDocument[]) => {
+    setSopDocuments(sops);
+    try {
+      localStorage.setItem('dlh_sop_documents', JSON.stringify(sops));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateComplaints = (newComplaints: ComplaintTicket[]) => {
+    setComplaints(newComplaints);
+    try {
+      localStorage.setItem('dlh_complaints', JSON.stringify(newComplaints));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateFeedbacks = (newFeedbacks: SKMFeedback[]) => {
+    setFeedbacks(newFeedbacks);
+    try {
+      localStorage.setItem('dlh_feedbacks', JSON.stringify(newFeedbacks));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateParameters = (newParams: TestParameter[]) => {
+    setParameters(newParams);
+    try {
+      localStorage.setItem('dlh_parameters', JSON.stringify(newParams));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpdateNews = (newArticles: NewsItem[]) => {
+    setNews(newArticles);
+    try {
+      localStorage.setItem('dlh_news', JSON.stringify(newArticles));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleLoginSuccess = (user: AdminUser) => {
+    setCurrentUser(user);
+    try {
+      localStorage.setItem('dlh_admin_auth', JSON.stringify(user));
+    } catch (e) {
+      console.error(e);
+    }
+    setIsLoginModalOpen(false);
+    setIsAdminMode(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    try {
+      localStorage.removeItem('dlh_admin_auth');
+    } catch (e) {
+      console.error(e);
+    }
+    setIsAdminMode(false);
+  };
 
   // Modals
   const [isSubmissionModalOpen, setIsSubmissionModalOpen] = useState(false);
@@ -60,12 +257,24 @@ export default function App() {
   };
 
   const handleSubmissionSuccess = (newSample: SampleRequest) => {
-    setSamples([newSample, ...samples]);
+    const updated = [newSample, ...samples];
+    setSamples(updated);
+    try {
+      localStorage.setItem('dlh_samples', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
     setNewlyRegisteredCode(newSample.registrationNumber);
   };
 
   const handleUpdateSample = (updatedSample: SampleRequest) => {
-    setSamples(prev => prev.map(s => s.id === updatedSample.id ? updatedSample : s));
+    const updated = samples.map(s => s.id === updatedSample.id ? updatedSample : s);
+    setSamples(updated);
+    try {
+      localStorage.setItem('dlh_samples', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const navigateTo = (tab: string) => {
@@ -115,18 +324,35 @@ export default function App() {
         onOpenLocalhostGuide={() => setIsLocalhostGuideOpen(true)}
         isAdminMode={isAdminMode}
         setIsAdminMode={setIsAdminMode}
+        currentUser={currentUser}
+        onOpenAdminLogin={() => setIsLoginModalOpen(true)}
+        onLogout={handleLogout}
+        siteSettings={siteSettings}
       />
 
       {/* ADMIN DASHBOARD OR PUBLIC PORTAL */}
       {isAdminMode ? (
         <AdminDashboard
+          currentUser={currentUser}
+          onLogout={handleLogout}
+          onExitAdmin={() => setIsAdminMode(false)}
+          siteSettings={siteSettings}
+          onUpdateSiteSettings={handleUpdateSiteSettings}
+          staffMembers={staffMembers}
+          onUpdateStaffMembers={handleUpdateStaffMembers}
+          labFacilities={labFacilities}
+          onUpdateLabFacilities={handleUpdateLabFacilities}
+          parameters={parameters}
+          onUpdateParameters={handleUpdateParameters}
+          sopDocuments={sopDocuments}
+          onUpdateSOPDocuments={handleUpdateSOPDocuments}
           samples={samples}
           onUpdateSample={handleUpdateSample}
-          parameters={parameters}
-          onUpdateParameters={setParameters}
           news={news}
-          onUpdateNews={setNews}
-          onExitAdmin={() => setIsAdminMode(false)}
+          onUpdateNews={handleUpdateNews}
+          complaints={complaints}
+          onUpdateComplaints={handleUpdateComplaints}
+          feedbacks={feedbacks}
         />
       ) : (
         <main className="flex-1">
@@ -139,6 +365,7 @@ export default function App() {
                 onOpenSubmissionModal={handleOpenSubmission}
                 onOpenTrackingModal={(code?: string) => handleOpenTrackingWithCode(code || '')}
                 onNavigateToTab={navigateTo}
+                settings={siteSettings}
               />
 
               {/* 4 Quick Access Feature Cards */}
@@ -333,16 +560,28 @@ export default function App() {
           )}
 
           {/* TAB 2: PROFIL */}
-          {activeTab === 'profil' && <ProfileSection />}
+          {activeTab === 'profil' && (
+            <ProfileSection
+              settings={siteSettings}
+              staffMembers={staffMembers}
+              labFacilities={labFacilities}
+            />
+          )}
 
           {/* TAB 3: TARIF & PARAMETER */}
           {activeTab === 'tarif' && (
-            <TariffCalculator onOpenSubmissionModal={handleOpenSubmission} />
+            <TariffCalculator
+              onOpenSubmissionModal={handleOpenSubmission}
+              parameters={parameters}
+            />
           )}
 
           {/* TAB 4: ALUR & SOP */}
           {activeTab === 'alur' && (
-            <FlowAndSOPSection onOpenSubmissionModal={handleOpenSubmission} />
+            <FlowAndSOPSection
+              onOpenSubmissionModal={handleOpenSubmission}
+              sopDocuments={sopDocuments}
+            />
           )}
 
           {/* TAB 5: TRACKING STATUS */}
@@ -354,13 +593,26 @@ export default function App() {
           )}
 
           {/* TAB 6: BERITA & PUBLIKASI */}
-          {activeTab === 'berita' && <NewsSection />}
+          {activeTab === 'berita' && <NewsSection news={news} />}
 
           {/* TAB 7: SKM & PENGADUAN */}
-          {activeTab === 'skm' && <SKMAndComplaintSection />}
+          {activeTab === 'skm' && (
+            <SKMAndComplaintSection
+              complaints={complaints}
+              feedbacks={feedbacks}
+              onAddComplaint={(c) => {
+                const updated = [c, ...complaints];
+                handleUpdateComplaints(updated);
+              }}
+              onAddFeedback={(f) => {
+                const updated = [f, ...feedbacks];
+                handleUpdateFeedbacks(updated);
+              }}
+            />
+          )}
 
           {/* TAB 8: KONTAK */}
-          {activeTab === 'kontak' && <ContactSection />}
+          {activeTab === 'kontak' && <ContactSection settings={siteSettings} />}
 
         </main>
       )}
@@ -388,13 +640,26 @@ export default function App() {
         onClose={() => setIsLocalhostGuideOpen(false)}
       />
 
+      {/* POPUP MODAL: ADMIN LOGIN */}
+      <AdminLoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
       {/* Government Footer */}
       <Footer
         onNavigate={navigateTo}
         onOpenAdmin={() => {
-          setIsAdminMode(true);
+          if (currentUser) {
+            setIsAdminMode(true);
+          } else {
+            setIsLoginModalOpen(true);
+          }
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
+        onOpenLocalhostGuide={() => setIsLocalhostGuideOpen(true)}
+        settings={siteSettings}
       />
 
     </div>
